@@ -45,8 +45,21 @@ public class AuthService {
         }
 
         UUID hostelId = null;
-        if (user.getRole() == User.UserRole.OWNER && user.getHostels() != null && !user.getHostels().isEmpty()) {
-            hostelId = user.getHostels().iterator().next().getId();
+        if (user.getRole() == User.UserRole.OWNER) {
+            if (user.getHostels() == null || user.getHostels().isEmpty()) {
+                // Auto-fix: Create a default hostel if missing
+                log.info("Auto-fixing missing hostel for user: {}", user.getEmail());
+                Hostel fixHostel = new Hostel();
+                fixHostel.setOwner(user);
+                fixHostel.setName("My Hostel");
+                fixHostel.setAddress("Please update your address in settings");
+                fixHostel.setSubscriptionActive(true);
+                fixHostel.setIsActive(true);
+                Hostel saved = hostelRepository.save(fixHostel);
+                hostelId = saved.getId();
+            } else {
+                hostelId = user.getHostels().iterator().next().getId();
+            }
         }
 
         String token = jwtUtil.generateToken(user.getId(), user.getEmail(), hostelId, user.getRole().name());
