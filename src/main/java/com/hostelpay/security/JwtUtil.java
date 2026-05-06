@@ -21,8 +21,22 @@ public class JwtUtil {
     @Value("${jwt.expiration:86400000}")
     private long jwtExpiration;
 
+    private SecretKey signingKey;
+ 
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        try {
+            this.signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+            log.info("JWT Signing Key initialized successfully.");
+        } catch (Exception e) {
+            log.error("CRITICAL: JWT Secret is too weak or invalid! Error: {}", e.getMessage());
+            // Fail fast with a clear message
+            throw new RuntimeException("JWT Configuration Failure: " + e.getMessage());
+        }
+    }
+ 
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        return this.signingKey;
     }
 
     /**
