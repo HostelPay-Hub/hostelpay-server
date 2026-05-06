@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -33,7 +35,8 @@ public class User {
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "role", nullable = false, columnDefinition = "user_role")
     private UserRole role = UserRole.OWNER;
 
     @Column(name = "created_at", nullable = false, updatable = false)
