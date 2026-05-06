@@ -28,6 +28,7 @@ public class DashboardService {
     @Autowired private RoomRepository roomRepository;
     @Autowired private LeaseContractRepository leaseContractRepository;
     @Autowired private ExpenseRepository expenseRepository;
+    @Autowired private HostelRepository hostelRepository;
 
     private UUID getCurrentHostelId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
