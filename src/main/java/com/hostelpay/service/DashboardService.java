@@ -67,6 +67,7 @@ public class DashboardService {
             .activeStudents(activeStudents)
             .totalRooms(totalRooms)
             .activeLeases(activeLeases.size())
+            .whatsappGroupUrl(hostel.getWhatsappGroupUrl())
             .build();
     }
 

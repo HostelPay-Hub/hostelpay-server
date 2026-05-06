@@ -33,6 +33,9 @@ public class Hostel extends BaseEntity {
     @Column(name = "subscription_active", nullable = false)
     private Boolean subscriptionActive = true;
 
+    @Column(name = "whatsapp_group_url")
+    private String whatsappGroupUrl;
+
     @OneToMany(mappedBy = "hostel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Room> rooms;
 

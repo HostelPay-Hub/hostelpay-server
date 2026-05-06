@@ -19,4 +19,5 @@ public class DashboardMetricsDTO {
     private long activeStudents;
     private long totalRooms;
     private long activeLeases;
+    private String whatsappGroupUrl;
 }
