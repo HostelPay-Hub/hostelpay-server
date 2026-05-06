@@ -114,4 +114,28 @@ public class StudentService {
             .updatedAt(student.getUpdatedAt())
             .build();
     }
+    public com.hostelpay.dto.StudentDashboardDTO getStudentDashboard() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UUID userId = ((JwtPrincipal) auth.getPrincipal()).getUserId();
+        
+        Student student = studentRepository.findByUserId(userId)
+            .orElseThrow(() -> new RuntimeException("Student profile not found"));
+
+        LeaseContract activeLease = student.getLeaseContracts().stream()
+            .filter(BaseEntity::getIsActive)
+            .findFirst()
+            .orElse(null);
+
+        java.math.BigDecimal pending = java.math.BigDecimal.ZERO; // Logic for calculating dues goes here later
+
+        return com.hostelpay.dto.StudentDashboardDTO.builder()
+            .studentName(student.getFullName())
+            .hostelName(student.getHostel().getName())
+            .roomNumber(activeLease != null ? activeLease.getRoom().getRoomNumber() : "Unassigned")
+            .monthlyRent(activeLease != null ? activeLease.getAgreedMonthlyRent() : java.math.BigDecimal.ZERO)
+            .pendingBalance(pending)
+            .status(pending.compareTo(java.math.BigDecimal.ZERO) > 0 ? "Overdue" : "All Clear")
+            .roommates(new java.util.ArrayList<>()) // Logic to find roommates in the same room
+            .build();
+    }
 }

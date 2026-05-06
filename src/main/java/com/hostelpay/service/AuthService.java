@@ -28,6 +28,9 @@ public class AuthService {
     private HostelRepository hostelRepository;
 
     @Autowired
+    private com.hostelpay.repositories.StudentRepository studentRepository;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
@@ -113,6 +116,44 @@ public class AuthService {
             .role(savedUser.getRole().name())
             .token(token)
             .message("Registration successful")
+            .build();
+    }
+
+    /**
+     * Students "claim" their profile created by the owner
+     */
+    public AuthResponseDTO claimStudentAccount(com.hostelpay.dto.StudentClaimRequestDTO request) {
+        com.hostelpay.entities.Student student = studentRepository
+            .findByPhoneNumberAndDob(request.getPhoneNumber(), request.getDob())
+            .orElseThrow(() -> new RuntimeException("Invalid phone number or date of birth. Please check with your hostel owner."));
+
+        if (student.getUser() != null) {
+            throw new RuntimeException("This account has already been claimed.");
+        }
+
+        // Create the user account for the student
+        User newUser = User.builder()
+            .email(request.getEmail() != null ? request.getEmail() : request.getPhoneNumber() + "@hostelpay.student")
+            .phoneNumber(request.getPhoneNumber())
+            .passwordHash(passwordEncoder.encode(request.getPassword()))
+            .role(User.UserRole.STUDENT)
+            .build();
+
+        User savedUser = userRepository.save(newUser);
+        student.setUser(savedUser);
+        studentRepository.save(student);
+
+        String token = jwtUtil.generateToken(savedUser.getId(), savedUser.getEmail(), student.getHostel().getId(), savedUser.getRole().name());
+
+        log.info("Student account claimed: {} for hostel: {}", savedUser.getEmail(), student.getHostel().getId());
+
+        return AuthResponseDTO.builder()
+            .userId(savedUser.getId())
+            .email(savedUser.getEmail())
+            .hostelId(student.getHostel().getId())
+            .role(savedUser.getRole().name())
+            .token(token)
+            .message("Account claimed successfully! Welcome to your dashboard.")
             .build();
     }
 }

@@ -15,6 +15,10 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
     @Query("SELECT s FROM Student s WHERE s.hostel.id = :hostelId AND s.isActive = true")
     List<Student> findActiveStudentsByHostelId(@Param("hostelId") UUID hostelId);
 
+    Optional<Student> findByPhoneNumberAndDob(String phoneNumber, java.time.LocalDate dob);
+
+    Optional<Student> findByUserId(UUID userId);
+
     @Query("SELECT COUNT(s) FROM Student s WHERE s.hostel.id = :hostelId AND s.isActive = true")
     long countActiveStudentsByHostelId(@Param("hostelId") UUID hostelId);
 }

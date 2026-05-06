@@ -60,6 +60,6 @@ public class User {
     }
 
     public enum UserRole {
-        OWNER, SUPER_ADMIN
+        OWNER, SUPER_ADMIN, STUDENT
     }
 }

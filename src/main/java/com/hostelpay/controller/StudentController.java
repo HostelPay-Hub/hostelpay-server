@@ -44,4 +44,9 @@ public class StudentController {
         studentService.deleteStudent(id);
         return ResponseEntity.ok("Student deleted");
     }
+
+    @GetMapping("/me/dashboard")
+    public ResponseEntity<com.hostelpay.dto.StudentDashboardDTO> getDashboard() {
+        return ResponseEntity.ok(studentService.getStudentDashboard());
+    }
 }

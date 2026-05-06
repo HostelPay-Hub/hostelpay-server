@@ -20,4 +20,10 @@ public interface LeaseContractRepository extends JpaRepository<LeaseContract, UU
 
     @Query("SELECT lc FROM LeaseContract lc WHERE lc.hostel.id = :hostelId AND lc.isActive = true AND lc.endDate IS NULL")
     List<LeaseContract> findCurrentActiveLeasesByHostelId(@Param("hostelId") UUID hostelId);
+    @Query("SELECT COUNT(l) FROM LeaseContract l WHERE l.room.id = :roomId AND l.isActive = true")
+    long countActiveLeasesByRoomId(@Param("roomId") UUID roomId);
+
+    @Modifying
+    @Query("UPDATE LeaseContract l SET l.isActive = false WHERE l.student.id = :studentId")
+    void deactivateAllLeasesForStudent(@Param("studentId") UUID studentId);
 }

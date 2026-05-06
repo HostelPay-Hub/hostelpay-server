@@ -21,6 +21,10 @@ import java.util.Set;
 @Builder
 public class Student extends BaseEntity {
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hostel_id", nullable = false)
     private Hostel hostel;

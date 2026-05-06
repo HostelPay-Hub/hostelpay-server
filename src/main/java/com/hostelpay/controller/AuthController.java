@@ -31,6 +31,11 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerOwner(request));
     }
 
+    @PostMapping("/claim-student")
+    public ResponseEntity<AuthResponseDTO> claimStudent(@RequestBody com.hostelpay.dto.StudentClaimRequestDTO request) {
+        return ResponseEntity.ok(authService.claimStudentAccount(request));
+    }
+
     @GetMapping("/health")
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("OK");
