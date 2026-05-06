@@ -5,8 +5,10 @@ import com.hostelpay.dto.RecordPaymentRequestDTO;
 import com.hostelpay.entities.*;
 import com.hostelpay.repositories.*;
 import com.hostelpay.security.JwtPrincipal;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -19,12 +21,14 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
+@RequiredArgsConstructor
 public class PaymentService {
 
     @Autowired private PaymentRepository paymentRepository;
     @Autowired private StudentRepository studentRepository;
     @Autowired private HostelRepository hostelRepository;
     @Autowired private AuditLogRepository auditLogRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     private UUID getCurrentHostelId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -62,6 +66,8 @@ public class PaymentService {
 
         AuditLog audit = AuditLog.builder().entityName("Payment").entityId(saved.getId()).action(AuditLog.AuditAction.CREATE).performedBy(getCurrentEmail()).newValue("Amount:" + saved.getAmount()).build();
         auditLogRepository.save(audit);
+        
+        messagingTemplate.convertAndSend("/topic/hostel/" + hostelId + "/payments", "UPDATE");
 
         log.info("Payment recorded: {} amount: {}", saved.getId(), saved.getAmount());
         return mapToDTO(saved);

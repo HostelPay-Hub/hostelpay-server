@@ -41,7 +41,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
-            response.getWriter().write("Too many requests. Please wait before trying again.");
+            response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\":\"Too many requests. Please wait.\"}");
         }
     }
 }

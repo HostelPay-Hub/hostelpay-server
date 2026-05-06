@@ -7,6 +7,7 @@ import com.hostelpay.repositories.HostelRepository;
 import com.hostelpay.repositories.NoticeRepository;
 import com.hostelpay.security.JwtPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class NoticeService {
 
     private final NoticeRepository noticeRepository;
     private final HostelRepository hostelRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     private UUID getCurrentHostelId() {
         JwtPrincipal principal = (JwtPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -48,7 +50,12 @@ public class NoticeService {
                 .priority(dto.getPriority() != null ? dto.getPriority() : "NORMAL")
                 .build();
 
-        return mapToDTO(noticeRepository.save(notice));
+        Notice saved = noticeRepository.save(notice);
+
+        // Broadcast WebSocket Update
+        messagingTemplate.convertAndSend("/topic/hostel/" + hostel.getId() + "/notices", "NEW_NOTICE");
+
+        return mapToDTO(saved);
     }
 
     @Transactional
