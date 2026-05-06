@@ -41,6 +41,9 @@ public class DashboardService {
         LocalDate startOfMonth = now.withDayOfMonth(1);
         LocalDate endOfMonth = now.withDayOfMonth(now.lengthOfMonth());
 
+        com.hostelpay.entities.Hostel hostel = hostelRepository.findById(hostelId)
+            .orElseThrow(() -> new RuntimeException("Hostel not found"));
+
         BigDecimal revenue = paymentRepository.sumPaymentsByHostelIdAndDateRange(hostelId, startOfMonth, endOfMonth);
         long activeStudents = studentRepository.countActiveStudentsByHostelId(hostelId);
         long totalRooms = roomRepository.findActiveRoomsByHostelId(hostelId).size();

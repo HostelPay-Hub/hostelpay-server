@@ -2,7 +2,9 @@ package com.hostelpay.service;
 
 import com.hostelpay.dto.CreateStudentRequestDTO;
 import com.hostelpay.dto.StudentResponseDTO;
+import com.hostelpay.entities.BaseEntity;
 import com.hostelpay.entities.Hostel;
+import com.hostelpay.entities.LeaseContract;
 import com.hostelpay.entities.Student;
 import com.hostelpay.repositories.HostelRepository;
 import com.hostelpay.repositories.StudentRepository;

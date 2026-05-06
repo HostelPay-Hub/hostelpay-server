@@ -17,6 +17,8 @@ public class CreateLeaseRequestDTO {
     private UUID studentId;
     private UUID roomId;
     private LocalDate startDate;
+    private LocalDate endDate;
     private BigDecimal agreedMonthlyRent;
-    private Integer billingAnchorDate; // e.g., 5th of every month
+    private Integer billingAnchorDate;
+    private String paymentTerm;
 }
