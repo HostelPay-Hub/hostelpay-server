@@ -37,10 +37,12 @@ public class Payment extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", nullable = false)
+    @Builder.Default
     private PaymentMethod paymentMethod = PaymentMethod.CASH;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @Builder.Default
     private PaymentStatus status = PaymentStatus.COMPLETED;
 
     @Column(name = "reference_notes")

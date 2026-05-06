@@ -37,6 +37,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "role", nullable = false, columnDefinition = "user_role")
+    @Builder.Default
     private UserRole role = UserRole.OWNER;
 
     @Column(name = "created_at", nullable = false, updatable = false)

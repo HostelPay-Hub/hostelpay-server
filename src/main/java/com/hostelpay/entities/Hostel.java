@@ -31,6 +31,7 @@ public class Hostel extends BaseEntity {
     private String address;
 
     @Column(name = "subscription_active", nullable = false)
+    @Builder.Default
     private Boolean subscriptionActive = true;
 
     @Column(name = "whatsapp_group_url")

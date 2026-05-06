@@ -47,6 +47,7 @@ public class LeaseContract extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_term", nullable = false)
+    @Builder.Default
     private PaymentTerm paymentTerm = PaymentTerm.ARREARS;
 
     public enum PaymentTerm {
