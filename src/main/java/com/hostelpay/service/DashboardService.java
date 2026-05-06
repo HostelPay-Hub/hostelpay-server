@@ -27,6 +27,7 @@ public class DashboardService {
     @Autowired private StudentRepository studentRepository;
     @Autowired private RoomRepository roomRepository;
     @Autowired private LeaseContractRepository leaseContractRepository;
+    @Autowired private ExpenseRepository expenseRepository;
 
     private UUID getCurrentHostelId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -51,9 +52,18 @@ public class DashboardService {
         BigDecimal pendingDues = totalExpectedRent.subtract(revenue);
         if (pendingDues.compareTo(BigDecimal.ZERO) < 0) pendingDues = BigDecimal.ZERO;
 
+        BigDecimal expenses = expenseRepository.findByHostelIdOrderByExpenseDateDesc(hostelId).stream()
+            .filter(e -> e.getExpenseDate().getYear() == now.getYear() && e.getExpenseDate().getMonth() == now.getMonth())
+            .map(e -> e.getAmount())
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal netProfit = revenue.subtract(expenses);
+
         return DashboardMetricsDTO.builder()
             .totalRevenueThisMonth(revenue)
             .totalPendingDues(pendingDues)
+            .totalExpensesThisMonth(expenses)
+            .netProfitThisMonth(netProfit)
             .activeStudents(activeStudents)
             .totalRooms(totalRooms)
             .activeLeases(activeLeases.size())

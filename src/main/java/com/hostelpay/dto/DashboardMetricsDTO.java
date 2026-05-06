@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 public class DashboardMetricsDTO {
     private BigDecimal totalRevenueThisMonth;
     private BigDecimal totalPendingDues;
+    private BigDecimal totalExpensesThisMonth;
+    private BigDecimal netProfitThisMonth;
     private long activeStudents;
     private long totalRooms;
     private long activeLeases;
