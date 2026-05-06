@@ -19,4 +19,20 @@ public class CreateStudentRequestDTO {
 
     private LocalDate dob;
     private String aadharUrl;
+
+    public void setDob(String dob) {
+        if (dob == null || dob.trim().isEmpty()) {
+            this.dob = null;
+        } else {
+            this.dob = LocalDate.parse(dob);
+        }
+    }
+
+    public void setAadharUrl(String aadharUrl) {
+        if (aadharUrl == null || aadharUrl.trim().isEmpty()) {
+            this.aadharUrl = null;
+        } else {
+            this.aadharUrl = aadharUrl;
+        }
+    }
 }
