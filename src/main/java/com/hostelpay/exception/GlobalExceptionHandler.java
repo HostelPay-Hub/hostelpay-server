@@ -19,9 +19,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponseDTO> handleRuntime(RuntimeException ex) {
         log.error("Runtime error: {}", ex.getMessage());
+        
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String msg = ex.getMessage();
+        
+        if (msg != null && (msg.toLowerCase().contains("user not found") || msg.toLowerCase().contains("invalid password"))) {
+            status = HttpStatus.UNAUTHORIZED;
+        }
+
         ErrorResponseDTO error = ErrorResponseDTO.builder()
-            .status(400).message(ex.getMessage()).timestamp(LocalDateTime.now()).build();
-        return ResponseEntity.badRequest().body(error);
+            .status(status.value())
+            .message(msg)
+            .timestamp(LocalDateTime.now())
+            .build();
+            
+        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
